@@ -18,8 +18,15 @@ h1{
 #form-container{
     display: flex;
     flex-direction:  column;
+    justify-content: center;
     align-items:  center;
+    width:50%;
+    margin: 0 auto;  
+    background-color: rgb(212, 226, 238);
+    padding-bottom: 2rem;
 }
+
+
 button[type="submit"] {
   width: 100%;
   padding: 10px;
@@ -49,9 +56,11 @@ button[type="submit"] {
     flex-direction: column;
     gap:1rem;
     align-items: center;
-    box-sizing: border-box;
-    border-width: 5px;
-    border-color: black;
+    /* box-sizing: border-box; */
+    /* border-width: 5px; */
+    /* border-color: black; */
+    background-color: aliceblue;
+    padding: 2rem;;
 }
 #list-blog-container{
     display: flex;

@@ -4,6 +4,7 @@ let contentElement = document.getElementById("content");
 let titleErrorMessage = document.getElementById("titleErrorMessage");
 let contentErrorMessage = document.getElementById("contentErrorMessage");
 let listBlogContainer = document.getElementById("list-blog-container");
+let editDialogElement = document.getElementById("editDialog");
 
 let blogObj = { // model blog obj
     "id": Number,
@@ -111,32 +112,62 @@ function handleBlogPageActions(e) {
     console.log(e);
     let targetedElement = e.target;
     if (targetedElement.name == "delete") {
-       deleteBlog(targetedElement);
+        deleteBlog(targetedElement);
 
     } else if (targetedElement.name == "edit") {
-        //open modal
+        //open dialog modal with data populated
+        editBlog(targetedElement);
+
     }
 }
 
-function deleteBlog(targetedElement){
-     let blogId = targetedElement.parentElement.id;
-        console.log(blogId)
-        //remove the item from the localstorage.
-        console.log(targetedElement.parentElement.id);
-        let targetBlogObj = blogList.filter((item) => {
-            blogId == item.blogId;
+function editBlog(targetedElement) {
+    console.log(targetedElement.parentElement.id);
 
+    editDialogElement.showModal();
+    console.log(editDialogElement.childElementCount);
+     let constForm = formElement.cloneNode(true);
+        
+    if (editDialogElement.childElementCount == 0) {
+        let cancelBtn = document.createElement("button");
+        cancelBtn.innerText = "close";
+        cancelBtn.type = "button";
+        cancelBtn.id = "cancelBtn";
+
+       constForm.appendChild(cancelBtn);
+        editDialogElement.appendChild(constForm);
+        cancelBtn.addEventListener('click', () => {
+            //close the dialog
+            editDialogElement.close();
         });
+    }
+    
+    //set the values
+    // titleElement.value = targetedElement.previousSibling.previousSibling.innerText;
+    // contentElement.value = targetedElement.previousSibling.innerText;
 
-        //remove the html element;
-        let elemetToBeRemoved = document.getElementById(blogId);
-        elemetToBeRemoved.remove();
 
-        let arrIndexToRemove = blogList.indexOf(targetBlogObj);
-        blogList.splice(arrIndexToRemove, 1);
-        // blogList.pop(targetBlogObj);
-        localStorage.setItem("blogList", JSON.stringify(blogList));
-        console.log(blogList);
+}
+
+function deleteBlog(targetedElement) {
+    let blogId = targetedElement.parentElement.id;
+    console.log(blogId)
+    //remove the item from the localstorage.
+    console.log(targetedElement.parentElement.id);
+    let targetBlogObj = blogList.filter((item) => {
+        blogId == item.blogId;
+
+    });
+
+    //remove the html element;
+    let elemetToBeRemoved = document.getElementById(blogId);
+    elemetToBeRemoved.remove();
+
+    let arrIndexToRemove = blogList.indexOf(targetBlogObj);
+    blogList.splice(arrIndexToRemove, 1);
+    // blogList.pop(targetBlogObj);
+    localStorage.setItem("blogList", JSON.stringify(blogList));
+    console.log(blogList);
 
 }
 

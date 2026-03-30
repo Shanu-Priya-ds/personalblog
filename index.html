@@ -21,10 +21,11 @@
             </div>
             <div class="form-group">
                 <label for="content">Content</label>
-                <textarea  name="content" id="content" placeholder="Start writing your content.." required ></textarea>
+                <textarea  name="content" id="content" placeholder="Start writing your content.." required rows="10" cols="50"></textarea>
                 <span class="error-message" id="contentErrorMessage"></span>
             </div>
             <button type="submit">Create</button>
+            <input type="hidden" id="id" />
             <form>
     </section>
     <!-- <div id> add the elements dynamically in js -->
@@ -34,6 +35,9 @@
     <section id="list-blog-container">
         <h3>Your Blog List</h3>
     </section>
+    <dialog id="editDialog">
+        
+    </dialog>
 </body>
 
 </html>
