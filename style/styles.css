@@ -1,4 +1,4 @@
-    
+
 h1{
     text-align: center;
 }
@@ -27,4 +27,19 @@ button[type="submit"] {
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+}
+.form-group input:user-invalid,
+.form-group textarea:user-invalid{
+    border-color: red;
+}
+.form-group input:valid,
+.form-group textarea:valid{
+    border-color: green;
+}
+.form-group .error-message {
+  display: block;
+  color: #e74c3c; /* Red for error messages */
+  font-size: 0.9em;
+  margin-top: 5px;
+  min-height: 1em; /* Reserve space to prevent layout shifts */
 }
