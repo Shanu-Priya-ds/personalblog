@@ -13,15 +13,15 @@
     <h1>Personal Blog</h1>
     <section id="form-container">
         <h2>New Post</h2>
-        <form>
-            <div id="form-group">
+        <form id="newBlogForm">
+            <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" name="title" id="title" required />
+                <input type="text" name="title" id="title" placeholder="Enter Blog Title" required />
                 <span class=error-message id="titleErrorMessage"></span>
             </div>
-            <div id="form-group">
+            <div class="form-group">
                 <label for="content">Content</label>
-                <input type="text" name="content" id="content" required />
+                <textarea  name="content" id="content" placeholder="Start writing your content.." required ></textarea>
                 <span class="error-message" id="contentErrorMessage"></span>
             </div>
             <button type="submit">Create</button>
