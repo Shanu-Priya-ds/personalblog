@@ -6,7 +6,7 @@ let contentErrorMessage = document.getElementById("contentErrorMessage");
 let listBlogContainer = document.getElementById("list-blog-container");
 
 let blogObj = { // model blog obj
-    "id":Number ,   
+    "id": Number,
     "title": String,
     "content": String,
     "timestamp": Date
@@ -27,15 +27,18 @@ window.onload = () => {
 }
 
 /** All element's event listener.. */
-titleElement.addEventListener('blur', ()=>{
+titleElement.addEventListener('blur', () => {
     checkValidity(titleElement, titleErrorMessage);
 })
 
 contentElement.addEventListener('blur', () =>
-checkValidity(contentElement, contentErrorMessage));
+    checkValidity(contentElement, contentErrorMessage));
 
 formElement.addEventListener('submit', handleFormSubmit);
-    
+
+listBlogContainer.addEventListener('click', handleBlogPageActions);
+
+//form submit actions
 function handleFormSubmit(e) {
     e.preventDefault();
     let title = e.target[0].value;
@@ -54,45 +57,93 @@ function handleFormSubmit(e) {
 
     //reset the form
     formElement.reset();
+
+    createBlogContainer(blogObj);
 }
-/**Iterated the @blogList and create a container for each blogObj
+/**Iterate the @blogList and create a container for each blogObj
  * and then append to the parent container.
  */
-function populateBlogLists(blogList){
-    
-    blogList.forEach(blog=>{
-        let div = document.createElement("div");
-        div.id = blog.id;
-        div.className = "blog-page";
+function populateBlogLists(blogList) {
 
-        let h2 = document.createElement("h2");
-        h2.innerText = blog.title;
-
-        let p = document.createElement("p");
-        p.innerText = blog.content;
-
-        let editBtn = document.createElement("button");
-        let deleteBtn = document.createElement("button");
-
-        editBtn.type ="button";
-        editBtn.innerText = "Edit";
-        deleteBtn.type = "button";
-        deleteBtn.innerText = "Delete";
-
-        div.appendChild(h2);
-        div.appendChild(p);
-        div.appendChild(editBtn);
-        div.appendChild(deleteBtn);
-        listBlogContainer.appendChild(div);
+    blogList.forEach(blog => {
+        createBlogContainer(blog);
 
     })
-    
+
+}
+
+function createBlogContainer(blog) {
+    let div = document.createElement("div");
+    div.id = blog.id;
+    div.className = "blog-page";
+
+    let h2 = document.createElement("h2");
+    h2.innerText = blog.title;
+
+    let p = document.createElement("p");
+    p.innerText = blog.content;
+
+    let editBtn = document.createElement("button");
+    let deleteBtn = document.createElement("button");
+
+    editBtn.type = "button";
+    editBtn.innerText = "Edit";
+    editBtn.name = "edit";
+    deleteBtn.type = "button";
+    deleteBtn.innerText = "Delete";
+    deleteBtn.name = "delete";
+
+    div.appendChild(h2);
+    div.appendChild(p);
+    div.appendChild(editBtn);
+    div.appendChild(deleteBtn);
+    listBlogContainer.appendChild(div);
+}
+
+/**
+ * Executes on click of any element from blog container. 
+ * Check if the targeted element is edit/delete,
+ * trigger the delete ad edit function
+ * do nothing for other elements.
+ * 'Event Delegation' - This method is applicable for any list item
+*/
+function handleBlogPageActions(e) {
+    console.log(e);
+    let targetedElement = e.target;
+    if (targetedElement.name == "delete") {
+       deleteBlog(targetedElement);
+
+    } else if (targetedElement.name == "edit") {
+        //open modal
+    }
+}
+
+function deleteBlog(targetedElement){
+     let blogId = targetedElement.parentElement.id;
+        console.log(blogId)
+        //remove the item from the localstorage.
+        console.log(targetedElement.parentElement.id);
+        let targetBlogObj = blogList.filter((item) => {
+            blogId == item.blogId;
+
+        });
+
+        //remove the html element;
+        let elemetToBeRemoved = document.getElementById(blogId);
+        elemetToBeRemoved.remove();
+
+        let arrIndexToRemove = blogList.indexOf(targetBlogObj);
+        blogList.splice(arrIndexToRemove, 1);
+        // blogList.pop(targetBlogObj);
+        localStorage.setItem("blogList", JSON.stringify(blogList));
+        console.log(blogList);
+
 }
 
 /** Utility methods */
 
 function generateId() {
-  return Date.now().toString() + Math.floor(Math.random() * 10000);
+    return Date.now().toString() + Math.floor(Math.random() * 10000);
 }
 
 /**
@@ -100,10 +151,10 @@ function generateId() {
  * @element is an input type element
  * @errorElement is a span element
  */
-function checkValidity(element, errorElement){
-    if(element.checkValidity){
+function checkValidity(element, errorElement) {
+    if (element.checkValidity) {
         errorElement.innerText = element.validationMessage;
-    }else{
+    } else {
         errorElement.innerText = "";
     }
 }
