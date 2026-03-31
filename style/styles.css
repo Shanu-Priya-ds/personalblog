@@ -69,3 +69,8 @@ button[type="submit"] {
     align-items: center;
     margin:5rem;
 }
+@media(max-width: 450px){
+    #form-container{
+        width: 100%;
+    }
+}

@@ -5,6 +5,13 @@ let titleErrorMessage = document.getElementById("titleErrorMessage");
 let contentErrorMessage = document.getElementById("contentErrorMessage");
 let listBlogContainer = document.getElementById("list-blog-container");
 let editDialogElement = document.getElementById("editDialog");
+let editTitle = document.getElementById("edit-title");
+let editContent = document.getElementById("edit-content");
+let closeDialog = document.getElementById("closeDialog");
+let blogIdHiddenElement = document.getElementById("blogId");
+let editForm = document.getElementById("editBlogForm");
+
+
 
 let blogObj = { // model blog obj
     "id": Number,
@@ -36,30 +43,43 @@ contentElement.addEventListener('blur', () =>
     checkValidity(contentElement, contentErrorMessage));
 
 formElement.addEventListener('submit', handleFormSubmit);
+editForm.addEventListener('submit', handleFormSubmit);
+
+closeDialog.addEventListener('click', () => {
+    //close the dialog
+    editDialogElement.close();
+})
 
 listBlogContainer.addEventListener('click', handleBlogPageActions);
 
 //form submit actions
-function handleFormSubmit(e) {
+function handleFormSubmit(e, action) {
     e.preventDefault();
+   
+    let blogRef= editDialogElement.blogRef;
     let title = e.target[0].value;
-    let content = e.target[1].value
+    let content = e.target[1].value;
 
-    blogObj.title = title;
-    blogObj.content = content;
-    blogObj.id = generateId();
-    blogObj.timestamp = Date.now();
-    blogList.push(blogObj);
+   if(blogIdHiddenElement.value)  { //edit blog
+       saveEditBlog(blogIdHiddenElement.value, title, content,blogRef);
 
-    //Add item to the local storage.
-    localStorage.setItem("blogList", JSON.stringify(blogList));
-    //console.log(e.target[0].value);
-    alert("New post has been created.");
+    } else {//new blog post
+        blogObj.title = title;
+        blogObj.content = content;
+        blogObj.id = generateId();
+        blogObj.timestamp = Date.now();
+        blogList.push(blogObj);
 
-    //reset the form
-    formElement.reset();
+        //Add item to the local storage.
+        localStorage.setItem("blogList", JSON.stringify(blogList));
+        //console.log(e.target[0].value);
+        alert("New post has been created.");
 
-    createBlogContainer(blogObj);
+        //reset the form
+        formElement.reset();
+
+        createBlogContainer(blogObj);
+    }
 }
 /**Iterate the @blogList and create a container for each blogObj
  * and then append to the parent container.
@@ -77,13 +97,16 @@ function createBlogContainer(blog) {
     let div = document.createElement("div");
     div.id = blog.id;
     div.className = "blog-page";
+    div.setAttribute("data-id", blog.id)
 
     let h2 = document.createElement("h2");
     h2.innerText = blog.title;
-
+    h2.className ="title";
+    
     let p = document.createElement("p");
     p.innerText = blog.content;
-
+    p.className = "content";
+   
     let editBtn = document.createElement("button");
     let deleteBtn = document.createElement("button");
 
@@ -98,6 +121,7 @@ function createBlogContainer(blog) {
     div.appendChild(p);
     div.appendChild(editBtn);
     div.appendChild(deleteBtn);
+    
     listBlogContainer.appendChild(div);
 }
 
@@ -116,58 +140,51 @@ function handleBlogPageActions(e) {
 
     } else if (targetedElement.name == "edit") {
         //open dialog modal with data populated
-        editBlog(targetedElement);
+        openDialog(targetedElement);
 
     }
 }
 
-function editBlog(targetedElement) {
-    console.log(targetedElement.parentElement.id);
-
-    editDialogElement.showModal();
-    console.log(editDialogElement.childElementCount);
-     let constForm = formElement.cloneNode(true);
-        
-    if (editDialogElement.childElementCount == 0) {
-        let cancelBtn = document.createElement("button");
-        cancelBtn.innerText = "close";
-        cancelBtn.type = "button";
-        cancelBtn.id = "cancelBtn";
-
-       constForm.appendChild(cancelBtn);
-        editDialogElement.appendChild(constForm);
-        cancelBtn.addEventListener('click', () => {
-            //close the dialog
-            editDialogElement.close();
-        });
-    }
+function openDialog(targetedElement) {
     
-    //set the values
-    // titleElement.value = targetedElement.previousSibling.previousSibling.innerText;
-    // contentElement.value = targetedElement.previousSibling.innerText;
+    editDialogElement.blogRef = targetedElement.closest(".blog-page");
+    console.log(targetedElement.closest(".blog-page"));
+    editDialogElement.showModal();
 
+    editContent.value = targetedElement.previousSibling.innerText;
+    editTitle.value = targetedElement.previousSibling.previousSibling.innerText;
+    blogIdHiddenElement.value = targetedElement.parentElement.dataset.id;
+}
 
+function saveEditBlog(id, title, content,blogRef){
+        //1. set the 
+        blogRef.querySelector(".title").innerText = title;
+        blogRef.querySelector(".content").innerText = content;
+        
+
+        //update the localstorage and list.
+        let editBlogObje = blogList.find(element => element.id == id);
+        console.log(editBlogObje);
+
+        editBlogObje.title = title;
+        editBlogObje.content = content;
+
+        localStorage.setItem("blogList", JSON.stringify(blogList));
+
+        editDialogElement.close(); // close the dialog
 }
 
 function deleteBlog(targetedElement) {
     let blogId = targetedElement.parentElement.id;
-    console.log(blogId)
-    //remove the item from the localstorage.
-    console.log(targetedElement.parentElement.id);
-    let targetBlogObj = blogList.filter((item) => {
-        blogId == item.blogId;
+    console.log(blogId);
+    //get the bloglist other than the targeted id
+    blogList = blogList.filter(item => blogId !== item.blogId);
 
-    });
-
-    //remove the html element;
+    //remove the element from DOM
     let elemetToBeRemoved = document.getElementById(blogId);
     elemetToBeRemoved.remove();
-
-    let arrIndexToRemove = blogList.indexOf(targetBlogObj);
-    blogList.splice(arrIndexToRemove, 1);
-    // blogList.pop(targetBlogObj);
+    //update localstorage with the filtered list
     localStorage.setItem("blogList", JSON.stringify(blogList));
-    console.log(blogList);
 
 }
 
