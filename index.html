@@ -34,6 +34,7 @@
     <dialog id="editDialog">
         <h2>Edit Post</h2>
         <form id="editBlogForm">
+            <button type="button" id="closeDialog">close</button>
             <div class="form-group">
                 <label for="edit-title">Title</label>
                 <input type="text" name="title" id="edit-title" placeholder="Enter Blog Title" required />
@@ -41,13 +42,12 @@
             </div>
             <div class="form-group">
                 <label for="edit-content">Content</label>
-                <textarea name="content" id="edit-content" placeholder="Start writing your content.." required rows="10"
+                <textarea autofocus name="content" id="edit-content" placeholder="Start writing your content.." required rows="10"
                     cols="50"></textarea>
                 <span class="error-message" id="editcontentErrorMessage"></span>
             </div>
-            <button type="submit">Update</button>
-            <button type="button" id="closeDialog">Cancel</button>
-            <input type="hidden" id="blogId">
+            <button type="submit">update</button>
+             <input type="hidden" id="blogId">
         </form>
     </dialog>
 </body>

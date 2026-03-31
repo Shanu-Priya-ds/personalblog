@@ -55,15 +55,22 @@ listBlogContainer.addEventListener('click', handleBlogPageActions);
 //form submit actions
 function handleFormSubmit(e, action) {
     e.preventDefault();
-   
-    let blogRef= editDialogElement.blogRef;
-    let title = e.target[0].value;
-    let content = e.target[1].value;
+    console.log(e.target.previousSibling);
+    console.log(e.target.previousSibling.previousSibling);
+    let blogRef = editDialogElement.blogRef;
+    console.log(blogIdHiddenElement.value);
+    if (blogIdHiddenElement.value) { //edit blog
+        let title = e.target[1].value;
+        let content = e.target[2].value;
 
-   if(blogIdHiddenElement.value)  { //edit blog
-       saveEditBlog(blogIdHiddenElement.value, title, content,blogRef);
+        saveEditBlog(blogIdHiddenElement.value, title, content, blogRef);
 
     } else {//new blog post
+
+        let title = e.target[0].value;
+        let content = e.target[1].value;
+
+
         blogObj.title = title;
         blogObj.content = content;
         blogObj.id = generateId();
@@ -101,12 +108,12 @@ function createBlogContainer(blog) {
 
     let h2 = document.createElement("h2");
     h2.innerText = blog.title;
-    h2.className ="title";
-    
+    h2.className = "title";
+
     let p = document.createElement("p");
     p.innerText = blog.content;
     p.className = "content";
-   
+
     let editBtn = document.createElement("button");
     let deleteBtn = document.createElement("button");
 
@@ -121,7 +128,7 @@ function createBlogContainer(blog) {
     div.appendChild(p);
     div.appendChild(editBtn);
     div.appendChild(deleteBtn);
-    
+
     listBlogContainer.appendChild(div);
 }
 
@@ -146,7 +153,7 @@ function handleBlogPageActions(e) {
 }
 
 function openDialog(targetedElement) {
-    
+
     editDialogElement.blogRef = targetedElement.closest(".blog-page");
     console.log(targetedElement.closest(".blog-page"));
     editDialogElement.showModal();
@@ -156,29 +163,32 @@ function openDialog(targetedElement) {
     blogIdHiddenElement.value = targetedElement.parentElement.dataset.id;
 }
 
-function saveEditBlog(id, title, content,blogRef){
-        //1. set the 
-        blogRef.querySelector(".title").innerText = title;
-        blogRef.querySelector(".content").innerText = content;
-        
+function saveEditBlog(id, title, content, blogRef) {
+    //1. set the 
+    blogRef.querySelector(".title").innerText = title;
+    blogRef.querySelector(".content").innerText = content;
 
-        //update the localstorage and list.
-        let editBlogObje = blogList.find(element => element.id == id);
-        console.log(editBlogObje);
+    //update the localstorage and list.
+    let editBlogObje = blogList.find(element => element.id == id);
+    console.log(editBlogObje);
 
-        editBlogObje.title = title;
-        editBlogObje.content = content;
+    editBlogObje.title = title;
+    editBlogObje.content = content;
 
-        localStorage.setItem("blogList", JSON.stringify(blogList));
+    localStorage.setItem("blogList", JSON.stringify(blogList));
 
-        editDialogElement.close(); // close the dialog
+    editDialogElement.close(); // close the dialog
+    //clear the hidden field
+    blogIdHiddenElement.value = null;
 }
 
 function deleteBlog(targetedElement) {
     let blogId = targetedElement.parentElement.id;
     console.log(blogId);
+    console.log("blogList before filter:", blogList);
+console.log("typeof blogId:", typeof blogId);
     //get the bloglist other than the targeted id
-    blogList = blogList.filter(item => blogId !== item.blogId);
+    blogList = blogList.filter(item => blogId !== item.id);
 
     //remove the element from DOM
     let elemetToBeRemoved = document.getElementById(blogId);
