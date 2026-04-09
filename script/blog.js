@@ -13,12 +13,12 @@ let editForm = document.getElementById("editBlogForm");
 
 
 
-let blogObj = { // model blog obj
-    "id": Number,
-    "title": String,
-    "content": String,
-    "timestamp": Date
-};
+// let blogObj = { // model blog obj. Do not create a global varaible when it is not constant
+//     "id": Number,
+//     "title": String,
+//     "content": String,
+//     "timestamp": Date
+// };
 
 let blogList = [];
 
@@ -69,8 +69,8 @@ function handleFormSubmit(e, action) {
 
         let title = e.target[0].value;
         let content = e.target[1].value;
-
-
+        
+        let blogObj ={};
         blogObj.title = title;
         blogObj.content = content;
         blogObj.id = generateId();
